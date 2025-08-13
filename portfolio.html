@@ -1,0 +1,1491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium Thumbnail Designer - Portfolio</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-gold: #D4AF37;
+            --primary-gold-dark: #B8941F;
+            --secondary-gold: #F4E4BC;
+            --accent-rose: #E91E63;
+            --accent-purple: #9C27B0;
+            --accent-indigo: #3F51B5;
+            --premium-black: #0A0A0B;
+            --premium-dark: #111115;
+            --premium-charcoal: #1A1A1F;
+            --text-platinum: #F8F9FA;
+            --text-silver: #B8BCC8;
+            --glass-bg: rgba(212, 175, 55, 0.03);
+            --glass-border: rgba(212, 175, 55, 0.15);
+            --glass-hover: rgba(212, 175, 55, 0.08);
+        }
+        
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        .font-display {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .glass-effect {
+            background: black;
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.37);
+        }
+        
+        .glass-effect:hover {
+            background: black;
+            border-color: rgba(212, 175, 55, 0.729);
+            box-shadow: 0 16px 48px rgba(212, 175, 55, 0.15);
+        }
+        
+        .premium-gradient {
+            background: linear-gradient(135deg, 
+                var(--primary-gold) 0%, 
+                var(--accent-rose) 25%, 
+                var(--accent-purple) 50%, 
+                var(--accent-indigo) 75%, 
+                var(--primary-gold) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient-shift 8s ease-in-out infinite;
+            background-size: 400% 400%;
+        }
+        
+        .premium-bg-gradient {
+            background: linear-gradient(135deg, 
+                var(--primary-gold) 0%, 
+                var(--accent-rose) 25%, 
+                var(--accent-purple) 50%, 
+                var(--accent-indigo) 75%, 
+                var(--primary-gold) 100%);
+            background-size: 400% 400%;
+            animation: gradient-shift 8s ease-in-out infinite;
+        }
+        
+        .gold-gradient {
+            background: linear-gradient(135deg, var(--primary-gold), var(--secondary-gold));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .premium-shadow {
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.118), 0 0 0 1px rgba(212, 175, 55, 0.1);
+        }
+        
+        .hover-lift {
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .hover-lift:hover {
+            transform: translateY(-12px) scale(1.02);
+            box-shadow: 0 32px 64px rgba(212, 175, 55, 0.2);
+        }
+        
+        .animate-float {
+            animation: float 8s ease-in-out infinite;
+        }
+        
+        .animate-glow {
+            animation: glow 3s ease-in-out infinite alternate;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            25% { transform: translateY(-10px) rotate(1deg); }
+            50% { transform: translateY(-20px) rotate(0deg); }
+            75% { transform: translateY(-10px) rotate(-1deg); }
+        }
+        
+        @keyframes glow {
+            0% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.3); }
+            100% { box-shadow: 0 0 40px rgba(212, 175, 55, 0.6); }
+        }
+        
+        @keyframes gradient-shift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+        
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .premium-border {
+            border: 2px solid;
+            border-image: linear-gradient(135deg, 
+                var(--primary-gold) 0%, 
+                var(--accent-rose) 25%, 
+                var(--accent-purple) 50%, 
+                var(--accent-indigo) 75%, 
+                var(--primary-gold) 100%) 1;
+        }
+        
+        .premium-text-shadow {
+            text-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+        }
+        
+        body {
+            background: radial-gradient(ellipse at top, var(--premium-charcoal) 0%, var(--premium-black) 50%, #000 100%);
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body class="text-white">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // Enhanced mock data for portfolio items
+        const mockPortfolioItems = [
+            {
+                id: 1,
+                title: "Epic Gaming Battle - Fortnite Championship",
+                category: "gaming",
+                image_url: "https://images.unsplash.com/photo-1542751371-adc38448a05e?w=600&h=400&fit=crop",
+                client_name: "ProGamers Elite",
+                description: "High-energy thumbnail with dramatic lighting, explosive effects, and premium typography that increased CTR by 85%",
+                featured: true,
+                views: "2.3M",
+                ctr: "+85%"
+            },
+            {
+                id: 2,
+                title: "iPhone 15 Pro Max - Ultimate Review",
+                category: "tech",
+                image_url: "https://images.unsplash.com/photo-1518709268805-4e9042af2176?w=600&h=400&fit=crop",
+                client_name: "TechVision Pro",
+                description: "Minimalist premium design showcasing the latest iPhone with luxury aesthetics and clean typography",
+                featured: false,
+                views: "1.8M",
+                ctr: "+67%"
+            },
+            {
+                id: 3,
+                title: "Millionaire Mindset - Business Success",
+                category: "business",
+                image_url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop",
+                client_name: "Business Empire",
+                description: "Luxury business thumbnail with gold accents and premium styling that conveys success and authority",
+                featured: true,
+                views: "3.1M",
+                ctr: "+92%"
+            },
+            {
+                id: 4,
+                title: "Luxury Lifestyle Vlog - Monaco Edition",
+                category: "lifestyle",
+                image_url: "https://images.unsplash.com/photo-1494790108755-2616c4ca9bb2?w=600&h=400&fit=crop",
+                client_name: "Luxury Living",
+                description: "Sophisticated lifestyle thumbnail with premium color palette and elegant composition",
+                featured: false,
+                views: "1.2M",
+                ctr: "+73%"
+            },
+            {
+                id: 5,
+                title: "Master Class - Photography Secrets",
+                category: "education",
+                image_url: "https://images.unsplash.com/photo-1606721977440-b5b13769a7a5?w=600&h=400&fit=crop",
+                client_name: "Creative Academy",
+                description: "Educational thumbnail with premium design elements and clear value proposition",
+                featured: false,
+                views: "892K",
+                ctr: "+58%"
+            },
+            {
+                id: 6,
+                title: "Hollywood Insider - Celebrity Secrets",
+                category: "entertainment",
+                image_url: "https://images.unsplash.com/photo-1492691527719-9d1e07e534b4?w=600&h=400&fit=crop",
+                client_name: "Star Stories",
+                description: "Premium entertainment thumbnail with dramatic lighting and luxury aesthetics",
+                featured: true,
+                views: "4.7M",
+                ctr: "+103%"
+            }
+        ];
+
+        // Enhanced testimonials with premium clients
+        const mockTestimonials = [
+            {
+                id: 1,
+                client_name: "Alexander Blackwood",
+                client_title: "CEO @ Luxury Brand Co | 5.2M Subscribers",
+                testimonial_text: "This designer transformed our brand completely. Our thumbnails now exude the premium quality our luxury brand represents. Revenue from YouTube increased 340% in just 6 months. Absolutely phenomenal work.",
+                rating: 5,
+                avatar_url: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face",
+                revenue_increase: "+340%",
+                subscriber_growth: "5.2M"
+            },
+            {
+                id: 2,
+                client_name: "Victoria Sterling",
+                client_title: "Lifestyle Influencer @ Sterling Life | 3.8M Subscribers",
+                testimonial_text: "The attention to detail and understanding of luxury aesthetics is unmatched. Every thumbnail feels like a piece of art. My engagement rates have never been higher, and brands are paying premium rates for collaborations.",
+                rating: 5,
+                avatar_url: "https://images.unsplash.com/photo-1494790108755-2616c4ca9bb2?w=100&h=100&fit=crop&crop=face",
+                revenue_increase: "+280%",
+                subscriber_growth: "3.8M"
+            },
+            {
+                id: 3,
+                client_name: "Marcus Gold",
+                client_title: "Gaming Champion @ Elite Esports | 12M Subscribers",
+                testimonial_text: "These thumbnails don't just look premium - they perform like premium. My click-through rates doubled, and I'm consistently trending. The ROI on this investment is absolutely incredible.",
+                rating: 5,
+                avatar_url: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face",
+                revenue_increase: "+425%",
+                subscriber_growth: "12M"
+            }
+        ];
+
+        // Premium icons with enhanced styling
+        const ArrowRight = ({ className = "w-5 h-5 ml-2" }) => (
+            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
+        );
+
+        const Play = ({ className = "w-5 h-5 ml-2" }) => (
+            <svg className={className} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14.828 14.828a4 4 0 01-5.656 0M9 10h1.5a2.5 2.5 0 002.5-2.5V6a2.5 2.5 0 00-2.5-2.5H9m0 0V4a2 2 0 012-2h2a2 2 0 012 2v1.5M9 3.5V2m0 14.5v1M15 10v4a2 2 0 01-2 2H9" />
+            </svg>
+        );
+
+        const Star = ({ filled = false, className = "w-5 h-5" }) => (
+            <svg className={className} fill={filled ? "currentColor" : "none"} stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+            </svg>
+        );
+
+        const Crown = ({ className = "w-6 h-6" }) => (
+            <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+                <path d="M5 16L3 8l5.5 2L12 4l3.5 6L21 8l-2 8H5zm2.7-2h8.6l.9-4.4L14 11l-2-3.4L10 11l-3.2-1.4L7.7 14z"/>
+            </svg>
+        );
+
+        const Diamond = ({ className = "w-6 h-6" }) => (
+            <svg className={className} fill="currentColor" viewBox="0 0 24 24">
+                <path d="M6 3h12l4 6-10 12L2 9l4-6zm-.45 2L3.89 8.89 12 18.11 20.11 8.89 18.45 5H5.55zm.95 2h11l-1.5 2.5H8.5L7.5 7z"/>
+            </svg>
+        );
+
+        // Premium UI Components
+        const Badge = ({ children, className = "", variant = "default" }) => {
+            const baseClass = "inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300";
+            const variantClass = variant === "outline" 
+                ? "border border-yellow-400/40 bg-yellow-400/10 text-yellow-300 hover:bg-yellow-400/20" 
+                : "border-yellow-400/30 hover:border-yellow-400/50";
+            return <span className={`${baseClass} ${variantClass} ${className}`}>{children}</span>;
+        };
+
+        const Button = ({ children, onClick, className = "", variant = "default", size = "default", disabled = false, type = "button" }) => {
+            const baseClass = "inline-flex items-center justify-center rounded-2xl font-semibold transition-all duration-400 transform hover:scale-105 active:scale-95";
+            const sizeClass = size === "lg" ? "px-10 py-5 text-lg" : size === "sm" ? "px-6 py-3 text-sm" : size === "icon" ? "p-4" : "px-8 py-4";
+            
+            let variantClass = "";
+            if (variant === "outline") {
+                variantClass = "glass-effect text-white hover:text-yellow-300 premium-shadow hover:shadow-yellow-400/20";
+            } else if (variant === "premium") {
+                variantClass = "premium-bg-gradient text-white premium-shadow hover:shadow-yellow-400/40";
+            } else {
+                variantClass = "bg-gradient-to-r from-yellow-400 to-yellow-500 text-black hover:from-yellow-300 hover:to-yellow-400 premium-shadow";
+            }
+            
+            return (
+                <button 
+                    type={type}
+                    onClick={onClick} 
+                    disabled={disabled}
+                    className={`${baseClass} ${sizeClass} ${variantClass} ${className} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                    {children}
+                </button>
+            );
+        };
+
+        // Enhanced Input Components
+        const Input = ({ className = "", ...props }) => (
+            <input 
+                className={`w-full px-6 py-4 rounded-2xl glass-effect text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400/50 transition-all duration-300 ${className}`} 
+                {...props} 
+            />
+        );
+
+        const Textarea = ({ className = "", ...props }) => (
+            <textarea 
+                className={`w-full px-6 py-4 rounded-2xl glass-effect text-white placeholder:text-gray-400 focus:outline-none focus:ring-2 focus:ring-yellow-400/50 transition-all duration-300 resize-none ${className}`} 
+                {...props} 
+            />
+        );
+
+        const Label = ({ children, className = "", ...props }) => (
+            <label className={`block text-sm font-semibold text-gray-200 mb-2 ${className}`} {...props}>
+                {children}
+            </label>
+        );
+
+        // Premium Select Components
+        const Select = ({ children, value, onValueChange, placeholder = "Select an option" }) => {
+            const [isOpen, setIsOpen] = useState(false);
+            
+            return (
+                <div className="relative">
+                    <button
+                        type="button"
+                        onClick={() => setIsOpen(!isOpen)}
+                        className="w-full px-6 py-4 rounded-2xl glass-effect text-white text-left focus:outline-none focus:ring-2 focus:ring-yellow-400/50 transition-all duration-300"
+                    >
+                        {value || placeholder}
+                        <svg className="absolute right-4 top-1/2 transform -translate-y-1/2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                    </button>
+                    {isOpen && (
+                        <div className="absolute z-50 w-full mt-2 glass-effect rounded-2xl premium-shadow max-h-60 overflow-auto">
+                            {React.Children.map(children, child =>
+                                React.cloneElement(child, { onValueChange, setIsOpen })
+                            )}
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const SelectItem = ({ children, value, onValueChange, setIsOpen }) => (
+            <button
+                type="button"
+                className="w-full px-6 py-4 text-left text-white hover:bg-yellow-400/10 transition-colors border-b border-gray-800 last:border-b-0 first:rounded-t-2xl last:rounded-b-2xl"
+                onClick={() => {
+                    onValueChange(value);
+                    setIsOpen(false);
+                }}
+            >
+                {children}
+            </button>
+        );
+
+        // Premium Hero Component
+        const Hero = () => {
+            const scrollToPortfolio = () => {
+                document.getElementById('portfolio')?.scrollIntoView({ behavior: 'smooth' });
+            };
+
+            const scrollToContact = () => {
+                document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+            };
+
+            return (
+                <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+                    {/* Premium animated background */}
+                    <div className="absolute inset-0">
+                        <div className="absolute top-20 left-10 w-96 h-96 bg-gradient-to-r from-yellow-400/10 to-orange-500/10 rounded-full blur-3xl animate-float"></div>
+                        <div className="absolute bottom-20 right-10 w-[32rem] h-[32rem] bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-full blur-3xl animate-float" style={{animationDelay: '2s'}}></div>
+                        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-80 h-80 bg-gradient-to-r from-indigo-500/10 to-cyan-500/10 rounded-full blur-3xl animate-float" style={{animationDelay: '4s'}}></div>
+                        
+                        {/* Premium particles */}
+                        <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-yellow-400 rounded-full animate-glow"></div>
+                        <div className="absolute top-3/4 right-1/4 w-1 h-1 bg-purple-400 rounded-full animate-glow" style={{animationDelay: '1s'}}></div>
+                        <div className="absolute bottom-1/4 left-3/4 w-3 h-3 bg-pink-400 rounded-full animate-glow" style={{animationDelay: '2s'}}></div>
+                    </div>
+                    
+                    <div className="relative z-10 max-w-8xl mx-auto px-8 py-24 text-center">
+                        <div className="space-y-12">
+                            {/* Premium badge */}
+                            <div className="inline-flex items-center gap-3 px-8 py-4 glass-effect rounded-full text-base font-semibold text-gray-200 mb-12 hover:scale-105 transition-transform duration-300">
+                                <Crown className="w-5 h-5 text-yellow-400" />
+                                <span>Luxury Thumbnail Design Studio</span>
+                                <div className="flex items-center gap-1">
+                                    {[1,2,3,4,5].map(i => (
+                                        <Star key={i} filled={true} className="w-4 h-4 text-yellow-400" />
+                                    ))}
+                                </div>
+                                <Badge className="ml-2">Premium</Badge>
+                            </div>
+
+                            {/* Premium main heading */}
+                            <div className="space-y-8">
+                                <h1 className="font-display text-7xl md:text-9xl font-black leading-tight premium-text-shadow">
+                                    <span className="text-white">Luxury</span>
+                                    <br />
+                                    <span className="premium-gradient">Thumbnails</span>
+                                    <br />
+                                    <span className="text-white">That</span> <span className="gold-gradient">Dominate</span>
+                                </h1>
+                                
+                                <p className="text-2xl md:text-3xl text-gray-300 max-w-5xl mx-auto leading-relaxed font-light">
+                                    Exquisite thumbnail designs that command attention and drive exceptional results. 
+                                    <span className="font-semibold gold-gradient"> Elevate your content to premium status</span> 
+                                    and dominate your niche with thumbnails that convert at luxury rates.
+                                </p>
+                            </div>
+
+                            {/* Premium stats */}
+                            <div className="flex flex-wrap justify-center gap-12 md:gap-20 py-12">
+                                <div className="text-center group">
+                                    <div className="text-5xl md:text-6xl font-black premium-gradient mb-2 group-hover:scale-110 transition-transform duration-300">150+</div>
+                                    <div className="text-gray-400 text-lg">Thumbnails Created</div>
+                                </div>
+                                <div className="text-center group">
+                                    <div className="text-5xl md:text-6xl font-black premium-gradient mb-2 group-hover:scale-110 transition-transform duration-300">30+</div>
+                                    <div className="text-gray-400 text-lg">Happy Clients</div>
+                                </div>
+                                <div className="text-center group">
+                                    <div className="text-5xl md:text-6xl font-black premium-gradient mb-2 group-hover:scale-110 transition-transform duration-300">98%</div>
+                                    <div className="text-gray-400 text-lg">Premium Satisfaction</div>
+                                </div>
+                            </div>
+
+                            {/* Premium CTA Buttons */}
+                            <div className="flex flex-col lg:flex-row gap-6 justify-center items-center pt-12">
+                                <Button 
+                                    onClick={scrollToPortfolio}
+                                    variant="premium"
+                                    size="lg"
+                                    className="px-12 py-6 text-xl font-bold shadow-2xl hover:shadow-yellow-400/30"
+                                >
+                                    <Diamond className="w-6 h-6 mr-3" />
+                                    View Premium Portfolio
+                                    <ArrowRight />
+                                </Button>
+                                
+                                <Button 
+                                    onClick={scrollToContact}
+                                    variant="outline" 
+                                    size="lg"
+                                    className="px-12 py-6 text-xl font-bold"
+                                >
+                                    <Crown className="w-6 h-6 mr-3" />
+                                    Start Your Project
+                                    <Play />
+                                </Button>
+                            </div>
+
+                            {/* Premium scroll indicator */}
+                            <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 animate-bounce">
+                                <div className="w-8 h-12 border-2 border-yellow-400 rounded-full flex justify-center animate-glow">
+                                    <div className="w-2 h-4 bg-yellow-400 rounded-full mt-3 animate-pulse"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        // Premium Portfolio Component
+        const Portfolio = () => {
+            const [filteredItems, setFilteredItems] = useState(mockPortfolioItems);
+            const [selectedCategory, setSelectedCategory] = useState("all");
+
+            const categories = [
+                { id: "all", label: "All Premium Work" },
+                { id: "gaming", label: "Gaming" },
+                { id: "tech", label: "Technology" },
+                { id: "business", label: "Business" },
+                { id: "lifestyle", label: "Luxury Lifestyle" },
+                { id: "education", label: "Education" },
+                { id: "entertainment", label: "Entertainment" }
+            ];
+
+            const filterByCategory = (categoryId) => {
+                setSelectedCategory(categoryId);
+                if (categoryId === "all") {
+                    setFilteredItems(mockPortfolioItems);
+                } else {
+                    setFilteredItems(mockPortfolioItems.filter(item => item.category === categoryId));
+                }
+            };
+
+            const getCategoryCount = (categoryId) => {
+                if (categoryId === "all") return mockPortfolioItems.length;
+                return mockPortfolioItems.filter(item => item.category === categoryId).length;
+            };
+
+            return (
+                <section id="portfolio" className="py-32 px-8 relative">
+                    {/* Premium background elements */}
+                    <div className="absolute inset-0 overflow-hidden">
+                        <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-r from-yellow-400/5 to-orange-500/5 rounded-full blur-3xl"></div>
+                        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-gradient-to-r from-purple-500/5 to-pink-500/5 rounded-full blur-3xl"></div>
+                    </div>
+                    
+                    <div className="max-w-8xl mx-auto relative z-10">
+                        {/* Premium section header */}
+                        <div className="text-center mb-20">
+                            <Badge className="mb-8">
+                                <Diamond className="w-4 h-4 mr-2" />
+                                Premium Portfolio
+                            </Badge>
+                            <h2 className="font-display text-6xl md:text-8xl font-bold text-white mb-8 premium-text-shadow">
+                                Luxury <span className="premium-gradient">Designs</span>
+                            </h2>
+                            <p className="text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
+                                Each design is meticulously crafted with premium aesthetics and psychological precision. 
+                                View our collection of luxury thumbnails that have generated millions in revenue.
+                            </p>
+                        </div>
+
+                        {/* Premium category filter */}
+                        <div className="flex flex-wrap justify-center gap-6 mb-20">
+                            {categories.map((category) => {
+                                const count = getCategoryCount(category.id);
+                                if (count === 0 && category.id !== "all") return null;
+                                
+                                return (
+                                    <Button
+                                        key={category.id}
+                                        onClick={() => filterByCategory(category.id)}
+                                        variant={selectedCategory === category.id ? "premium" : "outline"}
+                                        className={`rounded-full px-8 py-4 font-bold transition-all duration-400 ${
+                                            selectedCategory === category.id
+                                                ? "scale-105 shadow-2xl"
+                                                : "hover:scale-105"
+                                        }`}
+                                    >
+                                        {category.label}
+                                        <Badge variant="outline" className="ml-3">
+                                            {count}
+                                        </Badge>
+                                    </Button>
+                                );
+                            })}
+                        </div>
+
+                        {/* Premium portfolio grid */}
+                        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-10">
+                            {filteredItems.map((item, index) => (
+                                <div 
+                                    key={item.id} 
+                                    className="group hover-lift"
+                                    style={{ animationDelay: `${index * 0.15}s` }}
+                                >
+                                    <div className="glass-effect rounded-3xl overflow-hidden premium-shadow hover:shadow-yellow-400/30 transition-all duration-500">
+                                        <div className="relative aspect-video overflow-hidden">
+                                            <img
+                                                src={item.image_url}
+                                                alt={item.title}
+                                                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                                                <div className="absolute bottom-6 left-6 right-6">
+                                                    <div className="flex justify-between items-center mb-4">
+                                                        <Badge className="bg-green-500/20 text-green-300 border-green-400/30">
+                                                            {item.views} Views
+                                                        </Badge>
+                                                        <Badge className="bg-blue-500/20 text-blue-300 border-blue-400/30">
+                                                            CTR {item.ctr}
+                                                        </Badge>
+                                                    </div>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="premium"
+                                                        className="w-full font-semibold"
+                                                    >
+                                                        <Diamond className="w-4 h-4 mr-2" />
+                                                        View Details
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                            {item.featured && (
+                                                <div className="absolute top-6 right-6">
+                                                    <Badge className="premium-bg-gradient text-white font-bold px-4 py-2">
+                                                        <Crown className="w-4 h-4 mr-2" />
+                                                        Featured
+                                                    </Badge>
+                                                </div>
+                                            )}
+                                        </div>
+                                        <div className="p-8">
+                                            <div className="flex items-center justify-between mb-4">
+                                                <Badge 
+                                                    variant="outline" 
+                                                    className="text-yellow-400 border-yellow-400/40 bg-yellow-400/10 capitalize font-semibold"
+                                                >
+                                                    {item.category}
+                                                </Badge>
+                                            </div>
+                                            <h3 className="font-display text-2xl font-bold text-white mb-3 line-clamp-2 premium-text-shadow">
+                                                {item.title}
+                                            </h3>
+                                            {item.client_name && (
+                                                <p className="text-gray-300 font-semibold mb-3">
+                                                    Client: <span className="gold-gradient">{item.client_name}</span>
+                                                </p>
+                                            )}
+                                            {item.description && (
+                                                <p className="text-gray-400 leading-relaxed line-clamp-3">
+                                                    {item.description}
+                                                </p>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {filteredItems.length === 0 && (
+                            <div className="text-center py-20">
+                                <div className="text-8xl mb-6">💎</div>
+                                <h3 className="text-3xl font-bold text-white mb-4">No premium designs found</h3>
+                                <p className="text-gray-400 text-lg">Try selecting a different category to explore our luxury collection.</p>
+                            </div>
+                        )}
+                    </div>
+                </section>
+            );
+        };
+
+        // Premium Services Component
+        const Services = () => {
+            const services = [
+                {
+                    icon: Diamond,
+                    title: "Luxury Custom Design",
+                    description: "Bespoke thumbnails crafted with premium aesthetics, psychological precision, and luxury brand standards.",
+                    features: ["Unlimited revisions", "Premium source files", "Brand consistency", "Luxury aesthetics"],
+                    price: "Starting at $150",
+                    popular: false,
+                    roi: "+200% avg ROI"
+                },
+                {
+                    icon: Crown,
+                    title: "Elite Rush Delivery",
+                    description: "Premium thumbnails delivered within 12 hours with our exclusive rush service for urgent projects.",
+                    features: ["12h delivery", "Priority support", "Premium quality", "Dedicated designer"],
+                    price: "Starting at $300",
+                    popular: true,
+                    roi: "+350% avg ROI"
+                },
+                {
+                    icon: Star,
+                    title: "Performance Optimization",
+                    description: "Data-driven A/B testing with 5-10 premium variations to maximize your click-through rates.",
+                    features: ["5-10 variations", "A/B testing", "Performance analytics", "ROI tracking"],
+                    price: "Starting at $500",
+                    popular: false,
+                    roi: "+400% avg ROI"
+                },
+                {
+                    icon: Crown,
+                    title: "Enterprise Package",
+                    description: "Complete thumbnail solution for established creators and businesses seeking premium consistency.",
+                    features: ["50+ thumbnails", "Brand guidelines", "Priority support", "Monthly strategy calls"],
+                    price: "Starting at $2,500",
+                    popular: false,
+                    roi: "+500% avg ROI"
+                }
+            ];
+
+            const scrollToContact = () => {
+                document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+            };
+
+            return (
+                <section id="services" className="py-32 px-8 relative">
+                    {/* Premium background decoration */}
+                    <div className="absolute inset-0 overflow-hidden">
+                        <div className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-to-r from-yellow-400/5 to-orange-500/5 rounded-full blur-3xl"></div>
+                        <div className="absolute -bottom-40 -left-40 w-[32rem] h-[32rem] bg-gradient-to-r from-purple-500/5 to-pink-500/5 rounded-full blur-3xl"></div>
+                    </div>
+
+                    <div className="max-w-8xl mx-auto relative z-10">
+                        {/* Premium section header */}
+                        <div className="text-center mb-20">
+                            <Badge className="mb-8">
+                                <Crown className="w-4 h-4 mr-2" />
+                                Luxury Services
+                            </Badge>
+                            <h2 className="font-display text-6xl md:text-8xl font-bold text-white mb-8 premium-text-shadow">
+                                Premium <span className="premium-gradient">Packages</span>
+                            </h2>
+                            <p className="text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
+                                Exclusive design services crafted for discerning creators who demand nothing but excellence. 
+                                Each package is designed to deliver exceptional ROI and premium results.
+                            </p>
+                        </div>
+
+                        {/* Premium services grid */}
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-20">
+                            {services.map((service, index) => (
+                                <div 
+                                    key={index}
+                                    className={`relative group hover-lift ${
+                                        service.popular ? 'lg:scale-105 z-10' : ''
+                                    }`}
+                                >
+                                    {service.popular && (
+                                        <div className="absolute -top-6 left-1/2 transform -translate-x-1/2 z-20">
+                                            <Badge className="premium-bg-gradient text-white font-bold px-6 py-2 text-lg">
+                                                <Crown className="w-4 h-4 mr-2" />
+                                                Most Popular
+                                            </Badge>
+                                        </div>
+                                    )}
+                                    
+                                    <div className={`glass-effect rounded-3xl p-10 h-full transition-all duration-500 ${
+                                        service.popular 
+                                            ? 'premium-border premium-shadow hover:shadow-yellow-400/40' 
+                                            : 'premium-shadow hover:shadow-yellow-400/20'
+                                    }`}>
+                                        <div className="flex items-start justify-between mb-8">
+                                            <div className="flex items-center">
+                                                <div className={`p-4 rounded-2xl mr-6 ${
+                                                    service.popular 
+                                                        ? 'premium-bg-gradient' 
+                                                        : 'bg-gradient-to-r from-gray-700 to-gray-600'
+                                                }`}>
+                                                    <service.icon className="w-8 h-8 text-white" />
+                                                </div>
+                                                <div>
+                                                    <h3 className="font-display text-3xl font-bold text-white mb-2">{service.title}</h3>
+                                                    <div className={`text-2xl font-bold ${
+                                                        service.popular ? 'premium-gradient' : 'gold-gradient'
+                                                    }`}>
+                                                        {service.price}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <Badge className="bg-green-500/20 text-green-300 border-green-400/30 font-semibold">
+                                                {service.roi}
+                                            </Badge>
+                                        </div>
+
+                                        <p className="text-gray-300 text-lg mb-8 leading-relaxed">
+                                            {service.description}
+                                        </p>
+
+                                        <div className="space-y-4 mb-10">
+                                            {service.features.map((feature, featureIndex) => (
+                                                <div key={featureIndex} className="flex items-center text-gray-200">
+                                                    <div className="w-3 h-3 bg-gradient-to-r from-yellow-400 to-yellow-500 rounded-full mr-4 flex-shrink-0"></div>
+                                                    <span className="text-lg">{feature}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        <Button 
+                                            onClick={scrollToContact}
+                                            variant={service.popular ? "premium" : "outline"}
+                                            className="w-full py-5 text-lg font-bold"
+                                        >
+                                            {service.popular && <Crown className="w-5 h-5 mr-2" />}
+                                            Get Started
+                                        </Button>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+
+                        {/* Premium guarantee section */}
+                        <div className="glass-effect rounded-3xl p-12 text-center premium-shadow">
+                            <div className="flex items-center justify-center mb-6">
+                                <Diamond className="w-8 h-8 text-yellow-400 mr-4" />
+                                <h3 className="font-display text-3xl font-bold text-white">Luxury Guarantees</h3>
+                            </div>
+                            <p className="text-gray-300 text-xl mb-8 max-w-3xl mx-auto leading-relaxed">
+                                Every premium design comes with our exclusive guarantees. We don't just create beautiful thumbnails – 
+                                we deliver measurable results that exceed expectations.
+                            </p>
+                            <div className="flex flex-wrap justify-center gap-6">
+                                <Badge variant="outline" className="text-green-400 border-green-400/40 bg-green-400/10 text-lg px-6 py-3">
+                                    <Crown className="w-5 h-5 mr-2" />
+                                    200% ROI Guarantee
+                                </Badge>
+                                <Badge variant="outline" className="text-blue-400 border-blue-400/40 bg-blue-400/10 text-lg px-6 py-3">
+                                    <Diamond className="w-5 h-5 mr-2" />
+                                    Unlimited Revisions
+                                </Badge>
+                                <Badge variant="outline" className="text-purple-400 border-purple-400/40 bg-purple-400/10 text-lg px-6 py-3">
+                                    <Star className="w-5 h-5 mr-2" />
+                                    Premium Source Files
+                                </Badge>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        // Premium About Component
+        const About = () => {
+            const stats = [
+                { icon: Crown, label: "Years of Excellence", value: "3+" },
+                { icon: Diamond, label: "Premium Clients", value: "30+" },
+                { icon: Star, label: "Luxury Projects", value: "150+" },
+                { icon: Crown, label: "Success Rate", value: "99.8%" }
+            ];
+
+            const skills = [
+                "Adobe Creative Suite", "Luxury Brand Design", "Psychology of Color", "Premium Typography", 
+                "Conversion Optimization", "A/B Testing", "Brand Strategy", "Performance Analytics"
+            ];
+
+            const scrollToContact = () => {
+                document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
+            };
+
+            return (
+                <section id="about" className="py-32 px-8 relative">
+                    {/* Premium background elements */}
+                    <div className="absolute inset-0 overflow-hidden">
+                        <div className="absolute top-1/4 right-1/4 w-96 h-96 bg-gradient-to-r from-yellow-400/5 to-orange-500/5 rounded-full blur-3xl"></div>
+                        <div className="absolute bottom-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-purple-500/5 to-pink-500/5 rounded-full blur-3xl"></div>
+                    </div>
+
+                    <div className="max-w-8xl mx-auto relative z-10">
+                        <div className="grid xl:grid-cols-2 gap-20 items-center">
+                            {/* Premium content */}
+                            <div className="space-y-10">
+                                <div>
+                                    <Badge className="mb-8">
+                                        <Diamond className="w-4 h-4 mr-2" />
+                                        About the Designer
+                                    </Badge>
+                                    <h2 className="font-display text-6xl md:text-7xl font-bold text-white mb-8 premium-text-shadow">
+                                        Crafting <span className="premium-gradient">Luxury</span> Experiences
+                                    </h2>
+                                    <div className="space-y-8 text-xl text-gray-300 leading-relaxed">
+                                        <p>
+                                            With over 8 years of mastering the art of premium design, I specialize in creating 
+                                            thumbnails that don't just look extraordinary – they deliver exceptional results. 
+                                            My work has generated over <span className="gold-gradient font-bold">20+ million views</span> for clients worldwide.
+                                        </p>
+                                        <p>
+                                            Every design is meticulously crafted using advanced psychological principles, 
+                                            luxury aesthetics, and data-driven optimization. I don't create thumbnails – 
+                                            I engineer <span className="premium-gradient font-bold">premium marketing assets</span> that command attention and drive conversions.
+                                        </p>
+                                        <p>
+                                            My clientele includes Fortune 500 companies, top-tier YouTubers, and luxury brands 
+                                            who demand nothing but excellence. When you choose my services, you're not just 
+                                            buying a design – you're investing in <span className="gold-gradient font-bold">premium results</span>.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                {/* Premium skills */}
+                                <div>
+                                    <h3 className="font-display text-3xl font-bold text-white mb-6">Premium Expertise</h3>
+                                    <div className="flex flex-wrap gap-4">
+                                        {skills.map((skill, index) => (
+                                            <Badge 
+                                                key={index}
+                                                variant="outline" 
+                                                className="px-6 py-3 text-gray-300 border-gray-600 bg-gray-800/30 hover:border-yellow-400/50 hover:text-yellow-300 hover:bg-yellow-400/10 transition-all duration-300 cursor-default text-base"
+                                            >
+                                                {skill}
+                                            </Badge>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Premium CTAs */}
+                                <div className="flex flex-col lg:flex-row gap-6">
+                                    <Button 
+                                        onClick={scrollToContact}
+                                        variant="premium"
+                                        size="lg"
+                                        className="px-10 py-5 text-xl font-bold"
+                                    >
+                                        <Crown className="w-6 h-6 mr-3" />
+                                        Start Premium Project
+                                    </Button>
+                                    <Button 
+                                        variant="outline" 
+                                        size="lg"
+                                        className="px-10 py-5 text-xl font-bold"
+                                    >
+                                        <Diamond className="w-6 h-6 mr-3" />
+                                        View Case Studies
+                                    </Button>
+                                </div>
+                            </div>
+
+                            {/* Premium visual section */}
+                            <div className="space-y-10">
+                                {/* Premium profile */}
+                                <div className="relative">
+                                    <div className="w-full max-w-lg mx-auto aspect-square premium-bg-gradient rounded-3xl glass-effect flex items-center justify-center relative overflow-hidden">
+                                        <div className="text-center space-y-6 relative z-10">
+                                            <div className="w-40 h-40 bg-gradient-to-br from-white/90 to-white/70 rounded-full mx-auto flex items-center justify-center border-4 border-white/30">
+                                                <span className="text-6xl font-black text-gray-800">LD</span>
+                                            </div>
+                                            <div>
+                                                <h3 className="font-display text-3xl font-bold text-white mb-2">Luxury Designer</h3>
+                                                <p className="text-gray-200 text-lg">Premium Visual Strategist</p>
+                                                <Badge className="mt-3 bg-white/20 text-white border-white/30">
+                                                    <Crown className="w-4 h-4 mr-2" />
+                                                    Elite Creator
+                                                </Badge>
+                                            </div>
+                                        </div>
+                                        {/* Premium floating elements */}
+                                        <div className="absolute top-0 right-0 w-20 h-20 bg-white/10 rounded-full blur-xl"></div>
+                                        <div className="absolute bottom-0 left-0 w-32 h-32 bg-white/5 rounded-full blur-2xl"></div>
+                                    </div>
+                                    {/* Premium decorative elements */}
+                                    <div className="absolute -top-8 -right-8 w-32 h-32 bg-gradient-to-r from-yellow-400/20 to-orange-500/20 rounded-3xl glass-effect animate-float"></div>
+                                    <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-3xl glass-effect animate-float" style={{animationDelay: '2s'}}></div>
+                                </div>
+
+                                {/* Premium stats grid */}
+                                <div className="grid grid-cols-2 gap-6">
+                                    {stats.map((stat, index) => (
+                                        <div 
+                                            key={index}
+                                            className="glass-effect rounded-3xl p-8 text-center hover-lift group premium-shadow"
+                                        >
+                                            <div className="bg-gradient-to-br from-yellow-400/20 to-orange-500/20 w-16 h-16 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform duration-300">
+                                                <stat.icon className="w-8 h-8 text-yellow-400" />
+                                            </div>
+                                            <div className="text-4xl font-black premium-gradient mb-3">
+                                                {stat.value}
+                                            </div>
+                                            <div className="text-gray-400 font-semibold">
+                                                {stat.label}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        // Premium Testimonials Component
+        const Testimonials = () => {
+            const [currentIndex, setCurrentIndex] = useState(0);
+
+            const nextTestimonial = () => {
+                setCurrentIndex((prev) => (prev + 1) % mockTestimonials.length);
+            };
+
+            const prevTestimonial = () => {
+                setCurrentIndex((prev) => (prev - 1 + mockTestimonials.length) % mockTestimonials.length);
+            };
+
+            const currentTestimonial = mockTestimonials[currentIndex];
+
+            return (
+                <section id="testimonials" className="py-32 px-8 relative">
+                    {/* Premium background elements */}
+                    <div className="absolute inset-0 overflow-hidden">
+                        <div className="absolute top-1/3 left-1/3 w-96 h-96 bg-gradient-to-r from-yellow-400/3 to-orange-500/3 rounded-full blur-3xl"></div>
+                        <div className="absolute bottom-1/3 right-1/3 w-96 h-96 bg-gradient-to-r from-purple-500/3 to-pink-500/3 rounded-full blur-3xl"></div>
+                    </div>
+
+                    <div className="max-w-7xl mx-auto relative z-10">
+                        {/* Premium section header */}
+                        <div className="text-center mb-20">
+                            <Badge className="mb-8">
+                                <Crown className="w-4 h-4 mr-2" />
+                                Client Success Stories
+                            </Badge>
+                            <h2 className="font-display text-6xl md:text-8xl font-bold text-white mb-8 premium-text-shadow">
+                                Luxury <span className="premium-gradient">Results</span>
+                            </h2>
+                            <p className="text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
+                                Discover how premium creators and luxury brands have transformed their content 
+                                and achieved extraordinary results with our exclusive design services.
+                            </p>
+                        </div>
+
+                        {/* Premium testimonial carousel */}
+                        <div className="relative">
+                            <div className="glass-effect rounded-3xl p-16 md:p-20 max-w-5xl mx-auto premium-shadow">
+                                {/* Premium quote icon */}
+                                <div className="text-center mb-10">
+                                    <div className="inline-flex items-center justify-center w-20 h-20 premium-bg-gradient rounded-3xl">
+                                        <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-10zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
+                                        </svg>
+                                    </div>
+                                </div>
+
+                                {/* Premium testimonial content */}
+                                <div className="text-center mb-12">
+                                    <blockquote className="font-display text-3xl md:text-4xl font-light text-white leading-relaxed mb-10 premium-text-shadow">
+                                        "{currentTestimonial.testimonial_text}"
+                                    </blockquote>
+                                    
+                                    {/* Premium rating */}
+                                    <div className="flex justify-center mb-8">
+                                        {[...Array(5)].map((_, i) => (
+                                            <Star 
+                                                key={i} 
+                                                filled={i < currentTestimonial.rating}
+                                                className={`w-8 h-8 ${
+                                                    i < currentTestimonial.rating 
+                                                        ? 'text-yellow-400' 
+                                                        : 'text-gray-600'
+                                                }`} 
+                                            />
+                                        ))}
+                                    </div>
+
+                                    {/* Premium client info */}
+                                    <div className="flex items-center justify-center space-x-6">
+                                        {currentTestimonial.avatar_url ? (
+                                            <img 
+                                                src={currentTestimonial.avatar_url} 
+                                                alt={currentTestimonial.client_name}
+                                                className="w-20 h-20 rounded-full object-cover border-4 border-yellow-400/40 premium-shadow"
+                                            />
+                                        ) : (
+                                            <div className="w-20 h-20 premium-bg-gradient rounded-full flex items-center justify-center border-4 border-yellow-400/40">
+                                                <span className="text-white font-bold text-2xl">
+                                                    {currentTestimonial.client_name.charAt(0)}
+                                                </span>
+                                            </div>
+                                        )}
+                                        <div className="text-left">
+                                            <div className="font-display text-2xl font-bold text-white mb-1">
+                                                {currentTestimonial.client_name}
+                                            </div>
+                                            <div className="text-gray-300 text-lg mb-2">
+                                                {currentTestimonial.client_title}
+                                            </div>
+                                            <div className="flex gap-4">
+                                                <Badge className="bg-green-500/20 text-green-300 border-green-400/30">
+                                                    Revenue {currentTestimonial.revenue_increase}
+                                                </Badge>
+                                                <Badge className="bg-blue-500/20 text-blue-300 border-blue-400/30">
+                                                    {currentTestimonial.subscriber_growth} Subs
+                                                </Badge>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Premium navigation */}
+                                {mockTestimonials.length > 1 && (
+                                    <div className="flex items-center justify-center space-x-8">
+                                        <Button
+                                            variant="outline"
+                                            size="icon"
+                                            onClick={prevTestimonial}
+                                            className="w-16 h-16 rounded-full"
+                                        >
+                                            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                                            </svg>
+                                        </Button>
+
+                                        <div className="flex space-x-3">
+                                            {mockTestimonials.map((_, index) => (
+                                                <button
+                                                    key={index}
+                                                    onClick={() => setCurrentIndex(index)}
+                                                    className={`w-4 h-4 rounded-full transition-all duration-300 ${
+                                                        index === currentIndex 
+                                                            ? 'bg-yellow-400 scale-125' 
+                                                            : 'bg-gray-600 hover:bg-gray-500'
+                                                    }`}
+                                                />
+                                            ))}
+                                        </div>
+
+                                        <Button
+                                            variant="outline"
+                                            size="icon"
+                                            onClick={nextTestimonial}
+                                            className="w-16 h-16 rounded-full"
+                                        >
+                                            <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                                            </svg>
+                                        </Button>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Premium trust indicators */}
+                        <div className="flex flex-wrap justify-center gap-12 mt-20 text-center">
+                            <div className="group">
+                                <div className="text-4xl font-black premium-gradient mb-2 group-hover:scale-110 transition-transform duration-300">5.0★</div>
+                                <div className="text-gray-400 text-lg">Premium Rating</div>
+                            </div>
+                            <div className="group">
+                                <div className="text-4xl font-black premium-gradient mb-2 group-hover:scale-110 transition-transform duration-300">100%</div>
+                                <div className="text-gray-400 text-lg">Luxury Standard</div>
+                            </div>
+                            <div className="group">
+                                <div className="text-4xl font-black premium-gradient mb-2 group-hover:scale-110 transition-transform duration-300">24h</div>
+                                <div className="text-gray-400 text-lg">Elite Response</div>
+                            </div>
+                            <div className="group">
+                                <div className="text-4xl font-black premium-gradient mb-2 group-hover:scale-110 transition-transform duration-300">$2M+</div>
+                                <div className="text-gray-400 text-lg">Revenue Generated</div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        // Premium Contact Component
+        const Contact = () => {
+            const [formData, setFormData] = useState({
+                name: '',
+                email: '',
+                service: '',
+                budget: '',
+                message: '',
+                timeline: ''
+            });
+            const [isSubmitting, setIsSubmitting] = useState(false);
+            const [isSubmitted, setIsSubmitted] = useState(false);
+
+            const handleInputChange = (field, value) => {
+                setFormData(prev => ({ ...prev, [field]: value }));
+            };
+
+            const handleSubmit = async (e) => {
+                e.preventDefault();
+                setIsSubmitting(true);
+                
+                // Simulate premium form submission
+                setTimeout(() => {
+                    setIsSubmitted(true);
+                    setIsSubmitting(false);
+                }, 3000);
+            };
+
+            if (isSubmitted) {
+                return (
+                    <section id="contact" className="py-32 px-8">
+                        <div className="max-w-3xl mx-auto text-center">
+                            <div className="glass-effect rounded-3xl p-20 premium-shadow">
+                                <div className="w-24 h-24 premium-bg-gradient rounded-full flex items-center justify-center mx-auto mb-8">
+                                    <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                <h2 className="font-display text-5xl font-bold text-white mb-6 premium-text-shadow">Premium Request Received!</h2>
+                                <p className="text-2xl text-gray-300 mb-10 leading-relaxed">
+                                    Thank you for choosing our luxury design services! Our premium team will review your project 
+                                    and respond within 12 hours with a detailed proposal and timeline.
+                                </p>
+                                <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                                    <Button 
+                                        onClick={() => setIsSubmitted(false)}
+                                        variant="premium"
+                                        size="lg"
+                                    >
+                                        <Crown className="w-5 h-5 mr-2" />
+                                        Submit Another Request
+                                    </Button>
+                                    <Button 
+                                        variant="outline"
+                                        size="lg"
+                                    >
+                                        <Diamond className="w-5 h-5 mr-2" />
+                                        View Portfolio
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                );
+            }
+
+            return (
+                <section id="contact" className="py-32 px-8 relative">
+                    {/* Premium background elements */}
+                    <div className="absolute inset-0 overflow-hidden">
+                        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-gradient-to-r from-yellow-400/5 to-orange-500/5 rounded-full blur-3xl"></div>
+                        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-gradient-to-r from-purple-500/5 to-pink-500/5 rounded-full blur-3xl"></div>
+                    </div>
+
+                    <div className="max-w-5xl mx-auto relative z-10">
+                        {/* Premium section header */}
+                        <div className="text-center mb-20">
+                            <Badge className="mb-8">
+                                <Diamond className="w-4 h-4 mr-2" />
+                                Luxury Consultation
+                            </Badge>
+                            <h2 className="font-display text-6xl md:text-8xl font-bold text-white mb-8 premium-text-shadow">
+                                Start Your <span className="premium-gradient">Premium</span> Project
+                            </h2>
+                            <p className="text-2xl text-gray-300 max-w-4xl mx-auto leading-relaxed">
+                                Ready to elevate your content with luxury thumbnails that deliver exceptional results? 
+                                Let's discuss your vision and create something extraordinary together.
+                            </p>
+                        </div>
+
+                        {/* Premium contact form */}
+                        <div className="glass-effect rounded-3xl p-12 md:p-16 premium-shadow">
+                            <form onSubmit={handleSubmit} className="space-y-10">
+                                <div className="grid md:grid-cols-2 gap-10">
+                                    {/* Premium form fields */}
+                                    <div className="space-y-4">
+                                        <Label htmlFor="name" className="text-xl font-semibold text-white">
+                                            Full Name *
+                                        </Label>
+                                        <Input
+                                            id="name"
+                                            type="text"
+                                            value={formData.name}
+                                            onChange={(e) => handleInputChange('name', e.target.value)}
+                                            placeholder="Your name"
+                                            className="h-16 text-lg"
+                                            required
+                                        />
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <Label htmlFor="email" className="text-xl font-semibold text-white">
+                                            Email Address *
+                                        </Label>
+                                        <Input
+                                            id="email"
+                                            type="email"
+                                            value={formData.email}
+                                            onChange={(e) => handleInputChange('email', e.target.value)}
+                                            placeholder="your@email.com"
+                                            className="h-16 text-lg"
+                                            required
+                                        />
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <Label htmlFor="service" className="text-xl font-semibold text-white">
+                                            Premium Service *
+                                        </Label>
+                                        <Select 
+                                            value={formData.service} 
+                                            onValueChange={(value) => handleInputChange('service', value)}
+                                            placeholder="Select premium service"
+                                        >
+                                            <SelectItem value="luxury-custom">Luxury Custom Design</SelectItem>
+                                            <SelectItem value="elite-rush">Elite Rush Delivery</SelectItem>
+                                            <SelectItem value="performance-optimization">Performance Optimization</SelectItem>
+                                            <SelectItem value="enterprise-package">Enterprise Package</SelectItem>
+                                            <SelectItem value="consultation">Premium Consultation</SelectItem>
+                                        </Select>
+                                    </div>
+
+                                    <div className="space-y-4">
+                                        <Label htmlFor="budget" className="text-xl font-semibold text-white">
+                                            Investment Budget
+                                        </Label>
+                                        <Select 
+                                            value={formData.budget} 
+                                            onValueChange={(value) => handleInputChange('budget', value)}
+                                            placeholder="Select investment range"
+                                        >
+                                            <SelectItem value="150-500">$150 - $500</SelectItem>
+                                            <SelectItem value="500-1500">$500 - $1,500</SelectItem>
+                                            <SelectItem value="1500-5000">$1,500 - $5,000</SelectItem>
+                                            <SelectItem value="5000-15000">$5,000 - $15,000</SelectItem>
+                                            <SelectItem value="15000+">$15,000+</SelectItem>
+                                        </Select>
+                                    </div>
+
+                                    <div className="space-y-4 md:col-span-2">
+                                        <Label htmlFor="timeline" className="text-xl font-semibold text-white">
+                                            Project Timeline
+                                        </Label>
+                                        <Select 
+                                            value={formData.timeline} 
+                                            onValueChange={(value) => handleInputChange('timeline', value)}
+                                            placeholder="When do you need this completed?"
+                                        >
+                                            <SelectItem value="rush">Rush Delivery (12-24h)</SelectItem>
+                                            <SelectItem value="priority">Priority (2-3 days)</SelectItem>
+                                            <SelectItem value="standard">Standard (1 week)</SelectItem>
+                                            <SelectItem value="flexible">Flexible Timeline</SelectItem>
+                                        </Select>
+                                    </div>
+                                </div>
+
+                                {/* Premium message field */}
+                                <div className="space-y-4">
+                                    <Label htmlFor="message" className="text-xl font-semibold text-white">
+                                        Project Vision & Requirements *
+                                    </Label>
+                                    <Textarea
+                                        id="message"
+                                        value={formData.message}
+                                        onChange={(e) => handleInputChange('message', e.target.value)}
+                                        placeholder="Tell us about your vision, brand, target audience, current performance metrics, and specific requirements. The more details you provide, the better we can tailor our premium solution to your needs."
+                                        className="min-h-[150px] text-lg"
+                                        required
+                                    />
+                                </div>
+
+                                {/* Premium submit button */}
+                                <div className="text-center pt-8">
+                                    <Button
+                                        type="submit"
+                                        disabled={isSubmitting}
+                                        variant="premium"
+                                        size="lg"
+                                        className="px-16 py-6 text-xl font-bold"
+                                    >
+                                        {isSubmitting ? (
+                                            <>
+                                                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mr-4"></div>
+                                                Processing Premium Request...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Crown className="w-6 h-6 mr-3" />
+                                                Submit Premium Request
+                                                <ArrowRight />
+                                            </>
+                                        )}
+                                    </Button>
+                                </div>
+                            </form>
+                            
+
+                            {/* Premium contact info */}
+                            <div className="mt-16 pt-10 border-t border-gray-700/50">
+                                <div className="text-center">
+                                    <h3 className="font-display text-3xl font-bold text-white mb-6">Prefer Direct Contact?</h3>
+                                    <div className="flex items-center justify-center gap-4 text-gray-300 mb-4">
+                                        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                        </svg>
+                                        <span className="text-xl font-semibold">gtm.dsgns@gmail.com</span>
+                                    </div>
+                                    <p className="text-gray-400 text-lg mb-6">
+                                        Premium support available 24/7 for urgent projects
+                                    </p>
+                                    <div className="flex flex-wrap justify-center gap-6">
+                                        <Badge className="bg-green-500/20 text-green-300 border-green-400/30 px-6 py-3 text-lg">
+                                            <Diamond className="w-5 h-5 mr-2" />
+                                            12h Response Guarantee
+                                        </Badge>
+                                        <Badge className="bg-blue-500/20 text-blue-300 border-blue-400/30 px-6 py-3 text-lg">
+                                            <Crown className="w-5 h-5 mr-2" />
+                                            Premium Consultation
+                                        </Badge>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Premium response guarantee */}
+                        <div className="mt-16 text-center">
+                            <div className="inline-flex items-center gap-4 glass-effect px-10 py-6 rounded-3xl premium-shadow">
+                                <div className="w-4 h-4 bg-green-400 rounded-full animate-pulse"></div>
+                                <span className="text-gray-200 font-semibold text-lg">
+                                    <Diamond className="w-5 h-5 inline mr-2" />
+                                    Premium 12-hour response guarantee for all inquiries
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            );
+        };
+
+        // Main Premium App Component
+        const App = () => {
+            return (
+                <div className="min-h-screen">
+                    <div className="overflow-hidden">
+                        <Hero />
+                        <Portfolio />
+                        <Services />
+                        <About />
+                        <Testimonials />
+                        <Contact />
+                    </div>
+                </div>
+            );
+        };
+
+        // Render the Premium App
+        ReactDOM.render(<App />, document.getElementById('root'));
+// const EMAILJS_SERVICE_ID = 'service_uzn97hd';        // From Step 3
+// const EMAILJS_TEMPLATE_ID = 'premium_contact_template'; // From Step 4
+// const EMAILJS_PUBLIC_KEY = 'uAS9IFUmDYYydzHfr';        // From Account Settings
+// // In your handleSubmit function, add auto-reply:
+
+// // Send main email to you
+// const response = await emailjs.send(
+//     service_uzn97hd,
+//     premium_contact_template,
+//     templateParams
+// );
+
+// // Send confirmation email to client
+// await emailjs.send(
+//     service_uzn97hd,
+//     'client_confirmation', // Second template ID
+//     {
+//         from_name: formData.name,
+//         from_email: formData.email,
+//         service: formData.service,
+//         timeline: formData.timeline,
+//         budget: formData.budget,
+//         to_email: formData.email // Send to client
+//     }
+// );
+// // Add honeypot field (hidden from users)
+// <input 
+//     type="text" 
+//     name="website" 
+//     style={{ display: 'none' }} 
+//     tabIndex="-1" 
+//     autoComplete="off"
+// />
+
+// // In handleSubmit, reject if filled:
+// if (formData.website) {
+//     console.log('Bot detected');
+//     return;
+// }
+// // Flag urgent requests
+// const isUrgent = formData.timeline === 'rush' || 
+//                 parseInt(formData.budget.split('-')[0]) > 5000;
+
+// if (isUrgent) {
+//     // Send additional notification (SMS, Slack, etc.)
+// }
+    </script>
+</body>
+</html>
